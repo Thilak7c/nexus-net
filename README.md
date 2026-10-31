@@ -6,7 +6,7 @@
 
 Startups earn XP by turning connections into real outcomes. Gemma 4 generates their quests and verifies their proof, and Cradle sees the conversion funnel live.
 
-[**Live demo →**](https://nexus-net-iota.vercel.app/) &nbsp;·&nbsp; [**Pitch deck →**](https://nexus-pitch-ruddy.vercel.app)
+[**Live demo →**](https://nexus-net-iota.vercel.app/) &nbsp;·&nbsp; [**Demo video →**](https://youtu.be/02u3VCA0Mq4) &nbsp;·&nbsp; [**Pitch deck →**](https://nexus-pitch-ruddy.vercel.app)
 
 ![Next.js](https://img.shields.io/badge/Next.js-App_Router-000000?logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -29,6 +29,7 @@ Startups earn XP by turning connections into real outcomes. Gemma 4 generates th
 ## Table of contents
 
 - [The problem](#the-problem)
+- [Demo video](#demo-video)
 - [Features](#features)
 - [How proof verification works](#how-proof-verification-works)
 - [XP and levels](#xp-and-levels)
@@ -49,6 +50,22 @@ Startups earn XP by turning connections into real outcomes. Gemma 4 generates th
 Nexus Net turns that question into a game. Every connection becomes a quest, every quest needs proof, and every verified proof moves the startup, and the whole ecosystem, further up the funnel.
 
 📽️ See the [**pitch deck**](https://nexus-pitch-ruddy.vercel.app) we presented at the hackathon. Its source is [`pitch-deck.html`](pitch-deck.html).
+
+---
+
+## Demo video
+
+A full walkthrough of the product, from picking a startup to getting proof verified by Gemma 4.
+
+<div align="center">
+
+<a href="https://youtu.be/02u3VCA0Mq4">
+  <img src="https://img.youtube.com/vi/02u3VCA0Mq4/hqdefault.jpg" alt="Watch the Nexus Net product demo on YouTube" width="640" />
+</a>
+
+<sub>▶️ Click to watch on YouTube</sub>
+
+</div>
 
 ---
 
