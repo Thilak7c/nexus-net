@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus Net Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Micro+5&family=Quantico:wght@400;700&family=Rammetto+One&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a fixed 1280x720 game-board stage on a graph-paper desk, scaled to fit; a purple milestone track with hexagon nodes is the deck's progress bar. */
+:root {
+  --paper: #F7F4F2;
+  --grid: rgba(34, 34, 34, 0.055);
+  --ink: #222222;
+  --muted: #666666;
+  --subtle: #9a9a9a;
+  --card: #ffffff;
+  --blue: #405CEE;
+  --purple: #6E68FF;
+  --purple-dark: #4E4BA6;
+  --track: #3a2a8c;
+  --yellow: #FFDD56;
+  --gold: #F5B82E;
+  --green: #01C16B;
+  --red: #F25C5C;
+  --signature: linear-gradient(90deg, #FFD44E, #FF8D22 39%, #FB88FF 73%, #55FFDA);
+  --font-display: "Rammetto One", "Arial Black", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-pixel: "Micro 5", "Courier New", monospace;
+  --font-score: "Quantico", "Inter", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+
+/* ---------- stage ---------- */
+.viewport { flex: 1; position: relative; min-height: 0; }
+.stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 1280px; height: 720px;
+  transform-origin: center center;
+}
+.slide {
+  position: absolute; inset: 0;
+  padding: 44px 64px 40px;
+  display: none;
+  flex-direction: column;
+  gap: 22px;
+}
+.slide.active { display: flex; animation: pop .35s ease-out; }
+@keyframes pop { from { transform: translateY(8px); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .slide.active { animation: none; } .float { animation: none !important; } }
+
+/* ---------- labels & type ---------- */
+.label-row { display: flex; align-items: center; gap: 12px; }
+.slide-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-score); font-weight: 700; font-size: 15px; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--ink); color: #fff;
+  padding: 7px 14px 7px 8px; border-radius: 999px;
+}
+.slide-label .hex { width: 26px; height: 26px; font-size: 14px; }
+.slide-label.feature { background: var(--blue); }
+.slide-label.gemma { background: var(--purple-dark); }
+.slide-label.problem { background: #C93F3F; }
+.slide-label.solution { background: #06965a; }
+.kicker { font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.title { font-family: var(--font-display); font-size: 44px; line-height: 1.12; font-weight: 400; }
+.title.xl { font-size: 64px; }
+.lead { font-size: 19px; line-height: 1.55; color: #444; max-width: 640px; }
+.grad-text { background: var(--signature); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.hex {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+  background: var(--yellow); color: var(--ink);
+  font-family: var(--font-score); font-weight: 700; font-size: 16px;
+}
+
+/* ---------- cards ---------- */
+.card {
+  background: var(--card); border-radius: 22px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 10px 30px -14px rgba(40, 30, 90, .25);
+  padding: 22px;
+}
+.cols { display: grid; grid-template-columns: 1.05fr 1fr; gap: 36px; flex: 1; min-height: 0; align-items: stretch; }
+.col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.bullets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.bullets li { display: flex; gap: 12px; font-size: 17px; line-height: 1.45; color: #333; }
+.bullets li::before {
+  content: ""; flex: 0 0 12px; height: 12px; margin-top: 6px;
+  background: var(--purple); clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%);
+}
+.solves {
+  border-radius: 18px; padding: 16px 18px;
+  background: linear-gradient(180deg, #E8FFF3, #D2F7E4);
+  border: 2px solid #9BE6C1;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.solves .badge {
+  flex: 0 0 auto; font-family: var(--font-score); font-weight: 700; font-size: 12px; letter-spacing: 1.2px;
+  background: var(--green); color: #fff; padding: 6px 10px; border-radius: 999px; text-transform: uppercase;
+}
+.solves p { font-size: 16px; line-height: 1.5; color: #154c33; }
+.solves strong { color: #0b3a25; }
+.gemma-chip {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+  background: #EEEDFF; color: var(--purple-dark); border: 1.5px solid #CFCBFF;
+  font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 999px;
+}
+.gemma-chip .spark { width: 14px; height: 14px; background: var(--purple); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+.mock { background: var(--card); border-radius: 24px; padding: 22px; box-shadow: 0 18px 40px -20px rgba(40,30,90,.35); display: flex; flex-direction: column; gap: 14px; position: relative; }
+.mock-title { font-weight: 800; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+.mock-title span { font-weight: 600; font-size: 12px; color: var(--blue); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: #F1F1F4; color: #444; }
+.pill.ok { background: #DDF8EA; color: #0b7a47; }
+.pill.no { background: #FFE3E3; color: #b23232; }
+.pill.wait { background: #FFF4CC; color: #8a6400; }
+.pill.blue { background: #E4E9FF; color: #2c45c9; }
+.coin {
+  width: 54px; height: 54px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FFF3B0, #FFD23F 45%, #E9A500 100%);
+  border: 3px solid #fff; box-shadow: 0 4px 10px rgba(180,120,0,.35);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-family: var(--font-score); font-weight: 700; color: #7a4b00; font-size: 15px; line-height: 1;
+}
+.coin small { font-size: 9px; }
+.flag { display: inline-block; vertical-align: middle; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.12); }
+.score { font-family: var(--font-score); font-weight: 700; color: var(--blue); }
+.pixel { font-family: var(--font-pixel); }
+.src { font-size: 11.5px; color: var(--subtle); line-height: 1.4; }
+.src a { color: var(--subtle); }
+
+/* ---------- voxel blocks ---------- */
+.vox { position: relative; --d: 22px; }
+.vox::before { content: ""; position: absolute; left: 0; bottom: 100%; width: 100%; height: var(--d); background: var(--top); transform: skewX(-45deg); transform-origin: bottom left; }
+.vox::after { content: ""; position: absolute; left: 100%; top: 0; width: var(--d); height: 100%; background: var(--side); transform: skewY(-45deg); transform-origin: top left; }
+.float { animation: float 3.2s ease-in-out infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* ---------- podium ---------- */
+.podium-scene { position: relative; width: 560px; height: 380px; margin: 0 auto; }
+.shelf { z-index: 0; position: absolute; left: 20px; right: 40px; bottom: 30px; height: 26px; background: #D9A86C; --top: #EDCB98; --side: #B98445; --d: 30px; border-radius: 0 0 6px 6px; }
+.pblock { z-index: 1; position: absolute; bottom: 56px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 8px 12px; color: #2b1d00; }
+.pblock .tag { font-family: var(--font-score); font-weight: 700; font-size: 11px; background: var(--ink); color: var(--yellow); padding: 2px 8px; border-radius: 999px; }
+.pblock .cname { font-weight: 700; font-size: 13px; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+.pblock .xp { font-family: var(--font-score); font-weight: 700; font-size: 22px; }
+.pblock .xp small { font-size: 11px; }
+.p1 { left: 205px; width: 150px; height: 230px; background: linear-gradient(180deg, #FFE36E, #FFD23F); --top: #FFF0A8; --side: #D9AA16; z-index: 3; }
+.p2 { left: 70px; width: 135px; height: 160px; background: linear-gradient(180deg, #FF8E8E, #F46C6C); --top: #FFB7B7; --side: #C84848; color: #3a0d0d; }
+.p3 { left: 355px; width: 135px; height: 128px; background: linear-gradient(180deg, #6F86FF, #4A63F0); --top: #9AA9FF; --side: #2C3FB8; color: #fff; z-index: 2; }
+.p3 .xp { color: #fff; }
+.screen { background: #151a2b; border-radius: 10px; width: 118px; padding: 8px 6px; text-align: center; box-shadow: inset 0 0 0 2px #2b3352; }
+.screen .n { font-family: var(--font-pixel); color: #4BF29A; font-size: 54px; line-height: .9; }
+.screen .l { font-family: var(--font-pixel); color: #4BF29A; font-size: 16px; letter-spacing: 1px; }
+.trophy { position: absolute; left: 245px; top: 0; width: 70px; z-index: 3; }
+.prop { position: absolute; bottom: 56px; }
+
+/* ---------- bottom bar ---------- */
+.bar {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 18px;
+  padding: 12px 24px; background: rgba(255,255,255,.82); backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+.brand { font-family: var(--font-display); font-size: 18px; white-space: nowrap; }
+.brand b { color: var(--blue); font-weight: 400; }
+.track-wrap { flex: 1; position: relative; height: 34px; display: flex; align-items: center; min-width: 0; }
+.track-line { position: absolute; left: 0; right: 0; height: 10px; border-radius: 999px; background: #e3def5; overflow: hidden; }
+.track-fill { height: 100%; background: linear-gradient(90deg, var(--purple-dark), var(--purple)); border-radius: 999px; transition: width .3s ease; }
+.nodes { position: relative; display: flex; justify-content: space-between; width: 100%; }
+.node { border: 0; padding: 0; cursor: pointer; background: transparent; }
+.node .hex { width: 26px; height: 26px; font-size: 11px; background: #cfc9ee; color: #4E4BA6; transition: transform .2s; }
+.node.done .hex { background: var(--yellow); color: var(--ink); }
+.node.current .hex { background: var(--blue); color: #fff; transform: scale(1.25); }
+.node:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+.counter { font-family: var(--font-score); font-weight: 700; font-size: 15px; color: var(--muted); white-space: nowrap; min-width: 64px; text-align: center; }
+.nav-btn {
+  font-family: var(--font-body); font-weight: 700; font-size: 15px;
+  border: 0; border-radius: 999px; padding: 11px 20px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+}
+.nav-btn.prev { background: #ECEAF6; color: var(--purple-dark); }
+.nav-btn.next { background: var(--blue); color: #fff; box-shadow: 0 6px 16px -6px rgba(64,92,238,.7); }
+.nav-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.nav-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+@media (max-width: 760px) {
+  .bar { gap: 10px; padding: 10px 16px; }
+  .brand, .track-wrap { display: none; }
+  .counter { flex: 1; }
+}
+
+/* ---------- slide specific ---------- */
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.stat { border-radius: 22px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; min-height: 196px; position: relative; overflow: hidden; }
+.stat .big { font-family: var(--font-pixel); font-size: 76px; line-height: .8; }
+.stat .what { font-weight: 700; font-size: 17px; line-height: 1.35; }
+.stat .whytxt { font-size: 14.5px; line-height: 1.45; color: #444; }
+.stat.s1 { background: linear-gradient(180deg, #FFF6D6, #FFE9A3); }
+.stat.s2 { background: linear-gradient(180deg, #FFEBEB, #FFC4C5); }
+.stat.s2 .big { color: #C93F3F; }
+.stat.s3 { background: linear-gradient(180deg, #EAF0FF, #C9D5FF); }
+.pain-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.pain { background: var(--card); border-radius: 18px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; box-shadow: 0 8px 22px -16px rgba(40,30,90,.4); }
+.pain .ic { flex: 0 0 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.pain b { display: block; font-size: 15px; margin-bottom: 3px; }
+.pain span { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+.quote-card { background: var(--ink); color: #fff; border-radius: 28px; padding: 34px 40px; position: relative; }
+.quote-card .q { font-family: var(--font-display); font-size: 31px; line-height: 1.35; font-weight: 400; }
+.quote-card .q em { font-style: normal; background: var(--signature); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.quote-card .who { margin-top: 18px; font-size: 14px; color: #bbb; letter-spacing: .5px; }
+.chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.chip-lg { font-weight: 700; font-size: 15px; padding: 10px 16px; border-radius: 14px; background: var(--card); box-shadow: 0 6px 18px -12px rgba(40,30,90,.5); display: inline-flex; gap: 8px; align-items: center; }
+
+.loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.step { border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; min-height: 168px; }
+.step .num { font-family: var(--font-score); font-weight: 700; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(0,0,0,.55); }
+.step h3 { font-size: 18px; font-weight: 800; }
+.step p { font-size: 13.5px; line-height: 1.45; color: #333; }
+.step .icon { width: 40px; height: 40px; }
+.t-red { background: linear-gradient(180deg, #FFEBEB, #FFC9CA); }
+.t-silver { background: linear-gradient(180deg, #EDF2F6, #CCD5E1); }
+.t-yellow { background: linear-gradient(180deg, #FFF6D6, #FFE7A0); }
+.t-blue { background: linear-gradient(180deg, #E6F3FF, #BFE0FF); }
+.t-lav { background: linear-gradient(180deg, #F1EEFF, #D6CFFF); }
+.t-peach { background: linear-gradient(180deg, #FFF0E3, #FFD3B3); }
+.t-mint { background: linear-gradient(180deg, #E5FBF1, #BFF0D8); }
+.t-pink { background: linear-gradient(180deg, #FFEFFB, #FFCDEE); }
+
+/* passport */
+.passport { border-radius: 20px; background: linear-gradient(135deg, #2b3a9e, #4E4BA6 60%, #6E68FF); color: #fff; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden; }
+.passport::after { content: ""; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: repeating-radial-gradient(circle, transparent 0 10px, rgba(255,255,255,.08) 11px 12px); }
+.passport .row { display: flex; justify-content: space-between; font-size: 12px; color: #d4d7ff; }
+.passport .nm { font-family: var(--font-display); font-size: 24px; }
+.passport .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; }
+.passport .kv b { display: block; font-size: 11px; color: #c4c8ff; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 2px; }
+.stamp { position: absolute; right: 18px; bottom: 16px; transform: rotate(-12deg); border: 2px solid #7CFFC0; color: #7CFFC0; font-family: var(--font-score); font-weight: 700; font-size: 13px; padding: 6px 10px; border-radius: 10px; letter-spacing: 1px; }
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check { display: flex; align-items: center; justify-content: space-between; font-size: 14px; background: #F6F6FA; padding: 9px 12px; border-radius: 12px; }
+
+/* needs taps */
+.taps { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tap { border-radius: 14px; padding: 11px 12px; background: #F4F3FA; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
+.tap.on { background: #E4E9FF; color: #2c45c9; box-shadow: inset 0 0 0 2px #9CAEFF; }
+.option { border-radius: 16px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #FBFAFF; box-shadow: inset 0 0 0 1.5px #E5E2F7; }
+.option b { font-size: 14px; display: block; }
+.option span { font-size: 12.5px; color: var(--muted); }
+.add-btn { font-size: 12px; font-weight: 700; background: var(--blue); color: #fff; border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+
+/* quest cards */
+.quest { border-radius: 20px; overflow: hidden; background: var(--card); box-shadow: 0 10px 26px -16px rgba(40,30,90,.45); display: flex; }
+.quest .top { flex: 0 0 86px; display: flex; align-items: center; justify-content: center; }
+.quest .body { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.quest .body b { font-size: 14.5px; line-height: 1.3; }
+.quest .meta { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* verdict */
+.upload { border: 2px dashed #C9C4EE; border-radius: 18px; padding: 14px; display: flex; gap: 14px; align-items: center; background: #FBFAFF; }
+.doc { width: 70px; height: 88px; border-radius: 8px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.12); padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.doc i { display: block; height: 4px; border-radius: 2px; background: #dfe2ec; }
+.doc i.h { background: #4E4BA6; width: 60%; height: 6px; }
+.doc i.s { width: 40%; background: #F25C5C; margin-top: auto; }
+.verdict { border-radius: 18px; padding: 14px 16px; background: linear-gradient(180deg, #E8FFF3, #D2F7E4); display: flex; flex-direction: column; gap: 8px; }
+.verdict .head { display: flex; align-items: center; justify-content: space-between; }
+.verdict .head b { font-size: 18px; color: #0b7a47; }
+.xpjump { font-family: var(--font-pixel); font-size: 40px; color: var(--blue); line-height: .8; }
+
+/* levels */
+.tiers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.tier { border-radius: 18px; background: var(--card); overflow: hidden; box-shadow: 0 10px 26px -18px rgba(40,30,90,.5); display: flex; flex-direction: column; position: relative; }
+.tier .art { height: 108px; display: flex; align-items: center; justify-content: center; position: relative; }
+.tier .lock { position: absolute; top: 8px; right: 8px; font-size: 10.5px; font-weight: 700; background: #fff; padding: 3px 7px; border-radius: 6px; }
+.tier .info { padding: 10px; text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.tier .info b { font-size: 15px; }
+.tier .need { font-size: 11.5px; padding: 5px 8px; border-radius: 999px; }
+.tier.locked .art { filter: grayscale(.35); opacity: .75; }
+.chest { width: 70px; height: 56px; position: relative; }
+.ltrack { position: relative; height: 46px; display: flex; align-items: center; }
+.ltrack .line { position: absolute; left: 0; right: 0; height: 14px; border-radius: 999px; background: #2a1d6e; }
+.ltrack .fill { position: absolute; left: 0; width: 34%; height: 14px; border-radius: 999px; background: linear-gradient(90deg, #6E68FF, #9b95ff); }
+.ltrack .hexes { position: relative; display: flex; justify-content: space-between; width: 100%; padding: 0 2px; }
+.ltrack .hex { width: 40px; height: 40px; font-size: 17px; }
+.ltrack .hex.off { background: #6E68FF; color: #fff; }
+.you { position: absolute; left: 31%; top: -22px; font-family: var(--font-score); font-weight: 700; font-size: 11px; background: var(--blue); color: #fff; padding: 2px 8px; border-radius: 999px; }
+.xptable { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.xpcell { background: var(--card); border-radius: 14px; padding: 10px; text-align: center; box-shadow: 0 8px 20px -16px rgba(40,30,90,.5); }
+.xpcell b { display: block; font-size: 12.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .6px; }
+.xpcell span { font-family: var(--font-score); font-weight: 700; font-size: 22px; color: var(--blue); }
+
+/* calendar */
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal .d { font-size: 11px; font-weight: 700; color: var(--subtle); text-align: center; }
+.cal .c { height: 46px; border-radius: 10px; background: #F6F5FB; font-size: 11px; padding: 5px; color: #888; position: relative; }
+.cal .c.ev { background: #E4E9FF; color: #2c45c9; font-weight: 700; }
+.cal .c.ev.match { background: #FFF1B8; color: #7a5800; box-shadow: inset 0 0 0 2px #FFD23F; }
+.cal .c .dot { position: absolute; left: 5px; bottom: 5px; right: 5px; height: 5px; border-radius: 3px; background: currentColor; opacity: .55; }
+.event-card { border-radius: 18px; padding: 14px 16px; background: linear-gradient(180deg, #FFF6D6, #FFE9A3); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.event-card b { font-size: 15px; display: block; }
+.event-card span { font-size: 12.5px; color: #6a5200; }
+.boost { font-family: var(--font-score); font-weight: 700; background: var(--ink); color: var(--yellow); padding: 8px 12px; border-radius: 12px; white-space: nowrap; }
+
+/* leaderboard */
+.lb { background: #1f1f24; border-radius: 24px; padding: 18px; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 22px 22px; display: flex; gap: 12px; align-items: flex-end; justify-content: center; }
+.lbcard { border-radius: 16px; padding: 12px; width: 150px; text-align: center; color: #1b1b1b; display: flex; flex-direction: column; gap: 6px; align-items: center; border: 3px solid rgba(255,255,255,.7); }
+.lbcard .rk { font-family: var(--font-display); font-size: 18px; }
+.lbcard .nm { font-weight: 800; font-size: 14px; }
+.lbcard .sc { font-family: var(--font-score); font-weight: 700; font-size: 20px; }
+.lbcard.c1 { background: #FFD94A; transform: translateY(-14px); width: 170px; }
+.lbcard.c2 { background: #FF8080; transform: rotate(-3deg); }
+.lbcard.c3 { background: #6F86FF; color: #fff; transform: rotate(3deg); }
+.rows { display: flex; flex-direction: column; gap: 8px; }
+.lrow { display: flex; align-items: center; background: #F4F5F9; border-radius: 14px; overflow: hidden; }
+.lrow .r { width: 46px; align-self: stretch; display: flex; align-items: center; justify-content: center; color: #fff; font-family: var(--font-score); font-weight: 700; font-size: 17px; }
+.lrow .r.pu { background: var(--purple); }
+.lrow .r.gr { background: var(--green); }
+.lrow .n { flex: 1; padding: 10px 12px; font-weight: 700; font-size: 14px; display: flex; gap: 8px; align-items: center; }
+.lrow .n small { font-weight: 500; color: var(--muted); }
+.lrow .s { padding: 0 16px; font-family: var(--font-score); font-weight: 700; color: var(--blue); font-size: 19px; }
+.lrow.you-row { box-shadow: inset 0 0 0 2px var(--blue); background: #EEF1FF; }
+
+/* funnel */
+.funnel { display: flex; flex-direction: column; gap: 10px; }
+.fstage { display: grid; grid-template-columns: 118px 1fr 60px; align-items: center; gap: 12px; }
+.fstage .nm { font-weight: 700; font-size: 14px; }
+.fbar { height: 34px; border-radius: 10px; display: flex; align-items: center; padding-left: 12px; color: #fff; font-family: var(--font-score); font-weight: 700; font-size: 16px; }
+.fstage .kept { font-size: 12px; color: var(--muted); text-align: right; }
+.cbars { display: flex; flex-direction: column; gap: 8px; }
+.cbar { display: grid; grid-template-columns: 112px 1fr 34px; gap: 10px; align-items: center; font-size: 13px; font-weight: 600; }
+.cbar .t { height: 12px; border-radius: 6px; background: #EFEFF5; overflow: hidden; }
+.cbar .t i { display: block; height: 100%; background: var(--blue); border-radius: 6px; }
+.cbar .v { font-family: var(--font-score); font-weight: 700; text-align: right; }
+
+/* gemma */
+.gm-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.gm { border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.gm .mode { font-family: var(--font-score); font-weight: 700; font-size: 11.5px; letter-spacing: 1.2px; text-transform: uppercase; align-self: flex-start; padding: 4px 9px; border-radius: 999px; background: rgba(255,255,255,.75); }
+.gm h3 { font-size: 17px; font-weight: 800; }
+.gm p { font-size: 13.5px; line-height: 1.45; color: #333; }
+.why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.why { background: var(--card); border-radius: 18px; padding: 16px 18px; box-shadow: 0 8px 22px -16px rgba(40,30,90,.4); }
+.why b { font-size: 16px; display: block; margin-bottom: 4px; }
+.why span { font-size: 14px; color: #444; line-height: 1.45; }
+.guard { background: var(--ink); color: #fff; border-radius: 18px; padding: 14px 18px; font-size: 15px; line-height: 1.5; }
+.guard b { color: var(--yellow); }
+
+/* map table */
+.map { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.map th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); padding: 0 14px; }
+.map td { background: var(--card); padding: 12px 14px; font-size: 14.5px; line-height: 1.4; vertical-align: top; }
+.map td:first-child { border-radius: 14px 0 0 14px; font-weight: 800; width: 210px; }
+.map td:last-child { border-radius: 0 14px 14px 0; }
+.map .feat { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* next */
+.honest { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; flex: 1; }
+.list-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport">
+<div class="stage" id="stage">
+
+<!-- 1 TITLE -->
+<section class="slide" data-label="Start" aria-label="Title">
+  <div class="cols" style="grid-template-columns: 1fr 1fr; align-items:center;">
+    <div class="col" style="gap:20px;">
+      <div class="brand" style="font-size:30px;">Nexus <b>Net</b></div>
+      <div class="kicker">Startup ASEAN · Outcome Conversion</div>
+      <h1 class="title xl">Turn connections into <span class="grad-text">outcomes</span></h1>
+      <p class="lead">A gamified outcome tracker for ASEAN startups. Gemma 4 turns every intro into a quest, and every quest into proof Cradle can count.</p>
+      <div class="chips">
+        <span class="chip-lg"><span class="hex" style="width:22px;height:22px;font-size:10px;">KL</span> Hacktoberfest Hack Day KL</span>
+        <span class="chip-lg"><span class="gemma-chip" style="padding:3px 8px;"><span class="spark"></span>Gemma 4</span> Best Use of Gemma 4</span>
+      </div>
+    </div>
+    <div class="col" style="align-items:center;">
+      <div class="podium-scene" aria-label="Voxel leaderboard podium">
+        <svg class="trophy float" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="3" y="1" width="10" height="2" fill="#FFD23F"/><rect x="2" y="2" width="2" height="4" fill="#FFD23F"/><rect x="12" y="2" width="2" height="4" fill="#FFD23F"/>
+          <rect x="4" y="3" width="8" height="5" fill="#FFC21A"/><rect x="5" y="3" width="2" height="4" fill="#FFF0A0"/><rect x="5" y="8" width="6" height="2" fill="#E9A500"/>
+          <rect x="7" y="10" width="2" height="2" fill="#E9A500"/><rect x="5" y="12" width="6" height="2" fill="#8B5A2B"/><rect x="4" y="14" width="8" height="1" fill="#6B4220"/>
+        </svg>
+        <div class="vox pblock p2"><div style="text-align:center"><span class="tag">TOP2</span><div class="cname"><span data-flag="SG" data-h="12"></span>Singapore</div></div><div class="xp">960 <small>XP</small></div></div>
+        <div class="vox pblock p1"><div style="text-align:center"><span class="tag">TOP1</span><div class="cname"><span data-flag="ID" data-h="12"></span>Indonesia</div></div>
+          <div class="screen"><div class="n">40</div><div class="l">verified outcomes</div></div><div class="xp">1,015 <small>XP</small></div></div>
+        <div class="vox pblock p3"><div style="text-align:center"><span class="tag">TOP3</span><div class="cname"><span data-flag="VN" data-h="12"></span>Vietnam</div></div><div class="xp">520 <small>XP</small></div></div>
+        <div class="vox shelf"></div>
+        <div class="vox prop" style="left:24px;width:40px;height:20px;background:#FFD23F;--top:#FFE98A;--side:#D9A400;--d:10px;"></div>
+        <div class="vox prop" style="left:24px;bottom:76px;width:40px;height:12px;background:#FFD23F;--top:#FFE98A;--side:#D9A400;--d:10px;"></div>
+        <div class="vox prop" style="left:500px;z-index:1;width:34px;height:34px;background:#18C778;--top:#6BE6AE;--side:#0E9A5B;--d:12px;"></div>
+      </div>
+    </div>
+  </div>
+  <p class="src">Podium, XP and outcome counts on this deck are the app's fictional demo data.</p>
+</section>
+
+<!-- 2 PROBLEM STATEMENT -->
+<section class="slide" data-label="Challenge" aria-label="Problem statement">
+  <div class="label-row"><span class="slide-label problem"><span class="hex">!</span>The challenge</span><span class="kicker">Problem statement #1 · by Cradle (Startup ASEAN)</span></div>
+  <div class="quote-card">
+    <p class="q">“How can Startup ASEAN successfully convert ecosystem connections into <em>measurable outcomes</em>, including investments, commercial partnerships, market expansion, and cross-border POCs?”</p>
+    <p class="who">Hacktoberfest Hack Day KL 2026 · Problem statement 1: Outcome Conversion</p>
+  </div>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap:22px;">
+    <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="kicker" style="letter-spacing:2px;">What Cradle has today</div>
+      <ul class="bullets">
+        <li>Summits, open days and matching sessions create thousands of introductions across 10 countries.</li>
+        <li>A regional platform that lists programmes, funding, talent and partners.</li>
+      </ul>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:10px;background:#1f1f24;color:#fff;">
+      <div class="kicker" style="letter-spacing:2px;color:#FFD94A;">What it can't see</div>
+      <ul class="bullets">
+        <li style="color:#eee">Which of those introductions became a meeting, a POC, a partnership or an investment.</li>
+        <li style="color:#eee">Which countries, events and programmes actually convert.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 PROBLEM IN NUMBERS -->
+<section class="slide" data-label="Problem" aria-label="The problem in numbers">
+  <div class="label-row"><span class="slide-label problem"><span class="hex">!</span>The problem</span><span class="kicker">Why every connection has to count</span></div>
+  <h2 class="title" style="font-size:38px;">Connections die after the handshake</h2>
+  <div class="stat-grid">
+    <div class="stat s1">
+      <div class="big">11,000+</div>
+      <div class="what">ASEAN startups, worth US$131.2B together</div>
+      <div class="whytxt">A huge pool of founders who could partner across borders, spread over 10 markets with different rules and networks.</div>
+    </div>
+    <div class="stat s2">
+      <div class="big">-59%</div>
+      <div class="what">SEA tech funding, Jan–Sep 2024 vs 2023</div>
+      <div class="whytxt">US$2.3B raised versus US$5.7B a year earlier. With capital this scarce, a lost intro is a lost deal.</div>
+    </div>
+    <div class="stat s3">
+      <div class="big" style="color:#2c45c9;">3</div>
+      <div class="what">KPIs Cradle set for Startup ASEAN</div>
+      <div class="whytxt">Startup participation, investment outcomes and regional collaboration. Two of the three need outcome data nobody collects today.</div>
+    </div>
+  </div>
+  <div class="pain-row">
+    <div class="pain"><div class="ic t-red"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 10h14M12 5l5 5-5 5" stroke="#C93F3F" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></div><div><b>No next step</b><span>An intro ends with a business card, not an action.</span></div></div>
+    <div class="pain"><div class="ic t-yellow"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" stroke="#8a6400" stroke-width="2.4" fill="none"/><path d="M10 6v5l3 2" stroke="#8a6400" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></div><div><b>No follow-up push</b><span>Nothing rewards founders for acting in week one.</span></div></div>
+    <div class="pain"><div class="ic t-blue"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1.5" fill="#2c45c9"/><rect x="11" y="11" width="6" height="6" rx="1.5" fill="#2c45c9"/><rect x="11" y="3" width="6" height="6" rx="1.5" fill="#9CAEFF"/><rect x="3" y="11" width="6" height="6" rx="1.5" fill="#9CAEFF"/></svg></div><div><b>Fragmented info</b><span>Events, grants and talent live in 10 places.</span></div></div>
+    <div class="pain"><div class="ic t-lav"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 16V9M8 16V5M13 16v-4M18 16V3" stroke="#4E4BA6" stroke-width="2.6" stroke-linecap="round"/></svg></div><div><b>No proof</b><span>Outcomes are self-reported or never reported.</span></div></div>
+  </div>
+  <p class="src">Sources: <a href="https://www.businesstoday.com.my/2024/12/18/mosti-launches-startup-asean-to-strengthen-regional-startup-ecosystem/">Business Today (ASEAN Secretariat figures, Dec 2024)</a> · <a href="https://www.crowdfundinsider.com/2024/10/230892-southeast-asia-tech-startups-see-59-funding-drop-in-jan-sept-2024-report-finds/">Crowdfund Insider citing Tracxn (Oct 2024)</a> · <a href="https://www.bernama.com/lite/news.php?id=2438359">Bernama, Cradle CEO on platform KPIs (Jun 2025)</a></p>
+</section>
+
+<!-- 4 SOLUTION OVERVIEW -->
+<section class="slide" data-label="Solution" aria-label="Solution overview">
+  <div class="label-row"><span class="slide-label solution"><span class="hex">✓</span>Our solution</span><span class="kicker">One game loop from sign-up to deal</span></div>
+  <h2 class="title" style="font-size:38px;">Nexus Net makes every outcome a quest you can prove</h2>
+  <div class="loop">
+    <div class="step t-red"><span class="num">Feature 1</span><h3>Verify the company</h3><p>Gemma 4 reads the registration document and issues a company passport.</p></div>
+    <div class="step t-silver"><span class="num">Feature 2</span><h3>Find the gaps</h3><p>Six taps reveal what the startup is missing, matched with talent.</p></div>
+    <div class="step t-yellow"><span class="num">Feature 3</span><h3>Get quests</h3><p>Gemma 4 writes personalised, cross-border next steps.</p></div>
+    <div class="step t-blue"><span class="num">Feature 4</span><h3>Prove it</h3><p>Upload an LOI or invite. Gemma 4 checks it before XP is paid.</p></div>
+    <div class="step t-lav"><span class="num">Feature 5</span><h3>Level up</h3><p>XP climbs from Connected to Funded, one real outcome at a time.</p></div>
+    <div class="step t-peach"><span class="num">Feature 6</span><h3>Join events</h3><p>Sector-matched ecosystem events with an XP booster.</p></div>
+    <div class="step t-mint"><span class="num">Feature 7</span><h3>Compete</h3><p>Startups and countries race up the season leaderboard.</p></div>
+    <div class="step t-pink"><span class="num">Feature 8</span><h3>Cradle sees it</h3><p>A live funnel from connection to investment, by country and event.</p></div>
+  </div>
+</section>
+
+<!-- 5 FEATURE 1 -->
+<section class="slide" data-label="F1" aria-label="Feature 1: Company passport">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">1</span>Feature 1</span><span class="kicker">Company registration + passport</span></div>
+  <div class="cols">
+    <div class="col">
+      <h2 class="title">Every outcome starts with a verified company</h2>
+      <span class="gemma-chip"><span class="spark"></span>Gemma 4 · vision</span>
+      <ul class="bullets">
+        <li>Founders register and upload a registration document (PNG, JPEG or WebP).</li>
+        <li>Gemma 4 compares the company name, registration number and country with the profile.</li>
+        <li>Approved, rejected or unclear, with a reason. Approval issues a company passport; editing details means verifying again.</li>
+      </ul>
+      <div class="solves"><span class="badge">Solves</span><p><strong>Outcomes Cradle can trust.</strong> Every quest, XP point and deal is tied to a real, checked company, so the numbers mean something.</p></div>
+    </div>
+    <div class="col" style="justify-content:center;">
+      <div class="mock">
+        <div class="mock-title">Document check <span>/register</span></div>
+        <div class="checklist">
+          <div class="check">Company name matches <span class="pill ok">✓ Match</span></div>
+          <div class="check">Registration no. MY-DEMO-2026-007 <span class="pill ok">✓ Match</span></div>
+          <div class="check">Country <span><span data-flag="MY" data-h="12"></span> Malaysia <span class="pill ok">✓</span></span></div>
+        </div>
+        <div class="passport">
+          <div class="row"><span>NEXUS NET · COMPANY PASSPORT</span><span>2026</span></div>
+          <div class="nm">KopiKarya Labs</div>
+          <div class="kv"><div><b>Country</b><span data-flag="MY" data-h="11"></span> Malaysia</div><div><b>Sector</b>F&amp;B tech</div><div><b>Reg. no.</b>MY-DEMO-2026-007</div><div><b>Status</b>Verified</div></div>
+          <div class="stamp">VERIFIED</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 FEATURE 2 -->
+<section class="slide" data-label="F2" aria-label="Feature 2: AI needs assessment">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">2</span>Feature 2</span><span class="kicker">AI needs assessment</span></div>
+  <div class="cols">
+    <div class="col">
+      <h2 class="title">Six taps turn “we need help” into a plan</h2>
+      <span class="gemma-chip"><span class="spark"></span>Gemma 4 · text</span>
+      <ul class="bullets">
+        <li>Six quick questions plus optional free text.</li>
+        <li>Rules in code detect and rank gaps: website, marketing, product bugs, pitch deck, local contact.</li>
+        <li>Gemma 4 words up to four options; each can be added as a quest, with matched talent profiles.</li>
+      </ul>
+      <div class="solves"><span class="badge">Solves</span><p><strong>Fragmentation.</strong> Founders don't have to search 10 markets to find what they need; the gaps become ready-made quests with the right people attached.</p></div>
+    </div>
+    <div class="col" style="justify-content:center;">
+      <div class="mock">
+        <div class="mock-title">My needs <span>/needs</span></div>
+        <div class="taps">
+          <div class="tap on">Need a website <span>✓</span></div>
+          <div class="tap">Product bugs</div>
+          <div class="tap on">Local contact in Jakarta <span>✓</span></div>
+          <div class="tap">Marketing</div>
+          <div class="tap on">Pitch deck <span>✓</span></div>
+          <div class="tap">Hiring</div>
+        </div>
+        <div class="option"><div><b>Find a Jakarta retail partner</b><span>Talent: Market-entry advisor · 2 matches</span></div><span class="add-btn">Add as quest</span></div>
+        <div class="option"><div><b>Ship an investor-ready pitch deck</b><span>Talent: Pitch designer · 2 matches</span></div><span class="add-btn">Add as quest</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 FEATURE 3 -->
+<section class="slide" data-label="F3" aria-label="Feature 3: AI quest generator">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">3</span>Feature 3</span><span class="kicker">AI quest generator</span></div>
+  <div class="cols">
+    <div class="col">
+      <h2 class="title">Every connection gets a concrete next step</h2>
+      <span class="gemma-chip"><span class="spark"></span>Gemma 4 · text</span>
+      <ul class="bullets">
+        <li>Gemma 4 reads the startup profile plus the programme and event list.</li>
+        <li>It writes five quests: at least three cross-border, climbing from connect to funding.</li>
+        <li>Each quest names the proof needed. XP comes from a fixed table, never from the model.</li>
+      </ul>
+      <div class="solves"><span class="badge">Solves</span><p><strong>“No next step.”</strong> An intro in KL becomes “turn your Ho Chi Minh City contact into a POC proposal”: specific, cross-border, doable in 2–4 weeks.</p></div>
+    </div>
+    <div class="col" style="justify-content:center;gap:12px;">
+      <div class="quest"><div class="top t-blue"><div class="coin">+150<small>XP</small></div></div><div class="body"><b>Turn your Ho Chi Minh City intro into a POC proposal</b><div class="meta"><span class="pill blue">POC</span><span class="pill"><span data-flag="VN" data-h="10"></span> Vietnam</span><span class="pill wait">Open</span></div></div></div>
+      <div class="quest"><div class="top t-yellow"><div class="coin">+50<small>XP</small></div></div><div class="body"><b>Book a call with 2 Jakarta retail chains</b><div class="meta"><span class="pill blue">Meeting</span><span class="pill"><span data-flag="ID" data-h="10"></span> Indonesia</span><span class="pill wait">Open</span></div></div></div>
+      <div class="quest"><div class="top t-lav"><div class="coin">+75<small>XP</small></div></div><div class="body"><b>Apply to a regional fintech accelerator</b><div class="meta"><span class="pill blue">Programme</span><span class="pill"><span data-flag="SG" data-h="10"></span> Singapore</span><span class="pill ok">Verified ✓</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 FEATURE 4 -->
+<section class="slide" data-label="F4" aria-label="Feature 4: Proof verification">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">4</span>Feature 4</span><span class="kicker">Quest proof verification</span></div>
+  <div class="cols">
+    <div class="col">
+      <h2 class="title">Only proven outcomes earn XP</h2>
+      <span class="gemma-chip"><span class="spark"></span>Gemma 4 · vision</span>
+      <ul class="bullets">
+        <li>Founders upload proof: a signed LOI, a meeting invite, an acceptance email.</li>
+        <li>Gemma 4 checks the document type, named parties, country and date (today's date is in the prompt).</li>
+        <li>Approval also needs a named counterpart and a document type, so a random photo can't pass.</li>
+      </ul>
+      <div class="solves"><span class="badge">Solves</span><p><strong>“Measurable.”</strong> An outcome only counts once a document backs it, so Cradle's numbers are evidence, not self-reports.</p></div>
+    </div>
+    <div class="col" style="justify-content:center;">
+      <div class="mock">
+        <div class="mock-title">Submit proof <span>/quests</span></div>
+        <div class="upload"><div class="doc"><i class="h"></i><i></i><i></i><i style="width:70%"></i><i></i><i class="s"></i></div><div><b style="font-size:14px;">good_poc_loi.png</b><p style="font-size:12.5px;color:var(--muted);margin-top:4px;">Letter of Intent · resized to 1280px</p></div></div>
+        <div class="verdict">
+          <div class="head"><b>Approved</b><span class="pill ok">Confidence 0.9</span></div>
+          <div style="font-size:13px;line-height:1.6;color:#154c33;"><b>Document:</b> Letter of Intent<br><b>Parties:</b> PayLah Lite · Saigon retail partner<br><b>Date:</b> 2026-10-28</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;"><div class="xpjump">+150 XP</div><span class="pill blue">Level up: POC</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 FEATURE 5 -->
+<section class="slide" data-label="F5" aria-label="Feature 5: XP and levels">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">5</span>Feature 5</span><span class="kicker">XP and levels</span></div>
+  <h2 class="title" style="font-size:38px;">Five levels, from Connected to Funded</h2>
+  <div class="ltrack"><div class="line"></div><div class="fill"></div><span class="you">YOU · 250 XP</span><div class="hexes"><span class="hex">1</span><span class="hex">2</span><span class="hex off">3</span><span class="hex off">4</span><span class="hex off">5</span></div></div>
+  <div class="tiers">
+    <div class="tier"><div class="art t-red"><span class="lock">Unlocked</span><span class="hex" style="width:58px;height:58px;font-size:22px;background:#F46C6C;color:#fff;">1</span></div><div class="info"><b>Connected</b><span class="need t-red">0 XP</span></div></div>
+    <div class="tier"><div class="art t-silver"><span class="lock">Unlocked</span><span class="hex" style="width:58px;height:58px;font-size:22px;background:#8e9bb0;color:#fff;">2</span></div><div class="info"><b>Engaged</b><span class="need t-silver">100 XP</span></div></div>
+    <div class="tier locked"><div class="art t-yellow"><span class="lock">Locked</span><span class="hex" style="width:58px;height:58px;font-size:22px;background:#F5B82E;color:#fff;">3</span></div><div class="info"><b>POC</b><span class="need t-yellow">300 XP</span></div></div>
+    <div class="tier locked"><div class="art t-blue"><span class="lock">Locked</span><span class="hex" style="width:58px;height:58px;font-size:22px;background:#3a8be8;color:#fff;">4</span></div><div class="info"><b>Partnership</b><span class="need t-blue">600 XP</span></div></div>
+    <div class="tier locked"><div class="art t-lav"><span class="lock">Locked</span><span class="hex" style="width:58px;height:58px;font-size:22px;background:#6E68FF;color:#fff;">5</span></div><div class="info"><b>Funded</b><span class="need t-lav">1,000 XP</span></div></div>
+  </div>
+  <div class="cols" style="grid-template-columns: 1.3fr 1fr; gap:18px; align-items:center;">
+    <div class="xptable">
+      <div class="xpcell"><b>Connect</b><span>20</span></div><div class="xpcell"><b>Meeting</b><span>50</span></div><div class="xpcell"><b>Programme</b><span>75</span></div>
+      <div class="xpcell"><b>POC</b><span>150</span></div><div class="xpcell"><b>Partner</b><span>250</span></div><div class="xpcell"><b>Funding</b><span>400</span></div>
+    </div>
+    <div class="solves"><span class="badge">Solves</span><p><strong>No follow-up push.</strong> Bigger outcomes pay more XP, so founders have a reason to act this week, not in six months.</p></div>
+  </div>
+</section>
+
+<!-- 10 FEATURE 6 -->
+<section class="slide" data-label="F6" aria-label="Feature 6: Event calendar and XP booster">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">6</span>Feature 6</span><span class="kicker">Event calendar + XP booster</span></div>
+  <div class="cols">
+    <div class="col">
+      <h2 class="title">The right events, matched to your sector</h2>
+      <ul class="bullets">
+        <li>Live public listings from the Luma Kuala Lumpur feed, in month, week and list views.</li>
+        <li>Events relevant to the startup's sector are picked out automatically.</li>
+        <li>Subscribe with one click: XP once per event, a bigger boost for sector matches.</li>
+        <li>Event XP helps levels, but never counts as a verified outcome.</li>
+      </ul>
+      <div class="solves"><span class="badge">Solves</span><p><strong>Discovery.</strong> Founders stop missing the rooms where their next partner is, and Cradle can trace which events lead to outcomes.</p></div>
+    </div>
+    <div class="col" style="justify-content:center;">
+      <div class="mock">
+        <div class="mock-title">November 2026 <span>/events</span></div>
+        <div class="cal">
+          <div class="d">Mon</div><div class="d">Tue</div><div class="d">Wed</div><div class="d">Thu</div><div class="d">Fri</div><div class="d">Sat</div><div class="d">Sun</div>
+          <div class="c">2</div><div class="c ev">3<span class="dot"></span></div><div class="c">4</div><div class="c ev match">5<span class="dot"></span></div><div class="c">6</div><div class="c ev">7<span class="dot"></span></div><div class="c">8</div>
+          <div class="c">9</div><div class="c">10</div><div class="c ev match">11<span class="dot"></span></div><div class="c">12</div><div class="c ev">13<span class="dot"></span></div><div class="c">14</div><div class="c">15</div>
+        </div>
+        <div class="event-card"><div><b>Fintech founders night, KL</b><span>Matches your sector · Thu 5 Nov</span></div><span class="boost">+XP boost</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 FEATURE 7 -->
+<section class="slide" data-label="F7" aria-label="Feature 7: Leaderboard">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">7</span>Feature 7</span><span class="kicker">Season leaderboard</span></div>
+  <div class="cols">
+    <div class="col">
+      <h2 class="title">A race founders want to win</h2>
+      <ul class="bullets">
+        <li>Top-3 podium plus a ranked list, by XP then completed quests.</li>
+        <li>Your startup is highlighted and tagged “You”.</li>
+        <li>Country standings turn it into a friendly ASEAN rivalry.</li>
+      </ul>
+      <div class="solves"><span class="badge">Solves</span><p><strong>Low engagement.</strong> Visible progress and a seasonal countdown keep founders coming back to convert their next connection.</p></div>
+    </div>
+    <div class="col" style="justify-content:center;gap:14px;">
+      <div class="lb">
+        <div class="lbcard c2"><span class="rk">#2</span><span class="nm">MediLink</span><span data-flag="SG" data-h="14"></span><span class="sc">490</span></div>
+        <div class="lbcard c1"><span class="rk">#1</span><span class="nm">TaniPintar</span><span data-flag="ID" data-h="14"></span><span class="sc">1,015</span></div>
+        <div class="lbcard c3"><span class="rk">#3</span><span class="nm">ShopSiam</span><span data-flag="TH" data-h="14"></span><span class="sc">420</span></div>
+      </div>
+      <div class="rows">
+        <div class="lrow you-row"><span class="r pu">4</span><span class="n"><span data-flag="MY" data-h="12"></span>PayLah Lite <small>· Engaged</small> <span class="pill blue">You</span></span><span class="s">400</span></div>
+        <div class="lrow"><span class="r gr">5</span><span class="n"><span data-flag="VN" data-h="12"></span>AgriLoop <small>· Engaged</small></span><span class="s">310</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 FEATURE 8 -->
+<section class="slide" data-label="F8" aria-label="Feature 8: Cradle view">
+  <div class="label-row"><span class="slide-label feature"><span class="hex">8</span>Feature 8</span><span class="kicker">Cradle view · outcomes dashboard</span></div>
+  <h2 class="title" style="font-size:38px;">Cradle finally sees connection-to-deal conversion</h2>
+  <div class="cols" style="grid-template-columns:1.25fr 1fr;gap:22px;align-items:start;">
+    <div class="card" style="display:flex;flex-direction:column;gap:12px;">
+      <div class="mock-title">Conversion funnel <span class="pill">demo data</span></div>
+      <div class="funnel">
+        <div class="fstage"><span class="nm">Connections</span><div class="fbar" style="width:100%;background:#4E4BA6;">40</div><span class="kept"></span></div>
+        <div class="fstage"><span class="nm">Meetings</span><div class="fbar" style="width:70%;background:#6E68FF;">28</div><span class="kept">70%</span></div>
+        <div class="fstage"><span class="nm">POCs</span><div class="fbar" style="width:25%;background:#405CEE;">10</div><span class="kept">36%</span></div>
+        <div class="fstage"><span class="nm">Partnerships</span><div class="fbar" style="width:15%;background:#F5B82E;color:#3a2a00;">6</div><span class="kept">60%</span></div>
+        <div class="fstage"><span class="nm">Investments</span><div class="fbar" style="width:7%;min-width:40px;background:#01C16B;">2</div><span class="kept">33%</span></div>
+      </div>
+      <p class="src">Each outcome counts at every stage it reached, so the funnel never widens. Programme acceptances count as meetings.</p>
+    </div>
+    <div class="col">
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="mock-title">Outcomes by country</div>
+        <div class="cbars">
+          <div class="cbar"><span><span data-flag="ID" data-h="11"></span> Indonesia</span><span class="t"><i style="width:100%"></i></span><span class="v">11</span></div>
+          <div class="cbar"><span><span data-flag="SG" data-h="11"></span> Singapore</span><span class="t"><i style="width:82%"></i></span><span class="v">9</span></div>
+          <div class="cbar"><span><span data-flag="VN" data-h="11"></span> Vietnam</span><span class="t"><i style="width:64%"></i></span><span class="v">7</span></div>
+          <div class="cbar"><span><span data-flag="MY" data-h="11"></span> Malaysia</span><span class="t"><i style="width:55%"></i></span><span class="v">6</span></div>
+        </div>
+      </div>
+      <div class="solves"><span class="badge">Solves</span><p><strong>The KPI gap.</strong> Investment outcomes and regional collaboration become live numbers, by country and by event, straight from verified quests.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 WHY GEMMA -->
+<section class="slide" data-label="Gemma" aria-label="What makes it special: Gemma 4">
+  <div class="label-row"><span class="slide-label gemma"><span class="hex">★</span>What makes it special</span><span class="kicker">Where Gemma 4 does the work</span></div>
+  <h2 class="title" style="font-size:38px;">Gemma 4 reads the evidence and writes the plan</h2>
+  <div class="gm-grid">
+    <div class="gm t-red"><span class="mode">Vision</span><h3>Company check</h3><p>Reads registration documents and matches name, number and country to the profile.</p></div>
+    <div class="gm t-silver"><span class="mode">Text</span><h3>Needs wording</h3><p>Turns detected gaps into clear, actionable options founders can add as quests.</p></div>
+    <div class="gm t-yellow"><span class="mode">Text</span><h3>Quest generation</h3><p>Writes five personalised, mostly cross-border quests from the profile and catalog.</p></div>
+    <div class="gm t-blue"><span class="mode">Vision</span><h3>Proof check</h3><p>Reads LOIs and invites: document type, parties, country and date.</p></div>
+  </div>
+  <div class="why-grid">
+    <div class="why"><b>Open-weight</b><span>Can run in-region, so founders' deal documents can stay under ASEAN data rules.</span></div>
+    <div class="why"><b>Multimodal</b><span>One model reads photos of documents and writes the quests. No separate OCR pipeline.</span></div>
+    <div class="why"><b>Lightweight</b><span>Small enough to stay affordable at Startup ASEAN's target of 10,000+ startups.</span></div>
+  </div>
+  <div class="guard"><b>Guardrails:</b> code decides the rules (XP values, gap ranking, the approval bar), and Gemma reads and writes. Every Gemma call runs server-side, with a clearly labelled demo fallback if the model is unavailable.</div>
+</section>
+
+<!-- 14 PROBLEM → SOLUTION MAP -->
+<section class="slide" data-label="Fit" aria-label="How it answers the problem statement">
+  <div class="label-row"><span class="slide-label solution"><span class="hex">✓</span>Does it solve it?</span><span class="kicker">Each part of the problem statement, mapped</span></div>
+  <table class="map">
+    <thead><tr><th>Problem statement asks for</th><th>How Nexus Net delivers it</th><th>Features</th></tr></thead>
+    <tbody>
+      <tr><td>Convert connections</td><td>Every intro gets a quest with a next step and a proof requirement.</td><td><div class="feat"><span class="pill blue">F2</span><span class="pill blue">F3</span></div></td></tr>
+      <tr><td>Measurable outcomes</td><td>Outcomes only count when Gemma 4 has checked a document from a verified company.</td><td><div class="feat"><span class="pill blue">F1</span><span class="pill blue">F4</span><span class="pill blue">F8</span></div></td></tr>
+      <tr><td>Investments &amp; commercial partnerships</td><td>Dedicated quest types worth the most XP (250 and 400), tracked as funnel stages.</td><td><div class="feat"><span class="pill blue">F3</span><span class="pill blue">F5</span><span class="pill blue">F8</span></div></td></tr>
+      <tr><td>Market expansion &amp; cross-border POCs</td><td>At least three of every five quests target another ASEAN country; outcomes are reported by country.</td><td><div class="feat"><span class="pill blue">F3</span><span class="pill blue">F7</span><span class="pill blue">F8</span></div></td></tr>
+      <tr><td>Startup ASEAN's own KPIs</td><td>Participation (events, leaderboard), investment outcomes and regional collaboration (funnel, by country and event).</td><td><div class="feat"><span class="pill blue">F6</span><span class="pill blue">F7</span><span class="pill blue">F8</span></div></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 15 HONEST + NEXT -->
+<section class="slide" data-label="Next" aria-label="Limits and next steps">
+  <div class="label-row"><span class="slide-label"><span class="hex">→</span>What's next</span><span class="kicker">Built in four hours, honest about the edges</span></div>
+  <div class="honest">
+    <div class="card list-card">
+      <h3><span class="hex" style="background:#FFE3E3;color:#b23232;">!</span>Today's limits</h3>
+      <ul class="bullets">
+        <li>Startups, talent, proof images and dashboard numbers are fictional demo data.</li>
+        <li>Needs questions are fixed; Gemma only words the options.</li>
+        <li>Gemma's confidence isn't calibrated (it reports ~1.0), so approval also needs named parties and a document type.</li>
+        <li>The demo video runs in demo/simulation mode because of API quota.</li>
+      </ul>
+    </div>
+    <div class="card list-card">
+      <h3><span class="hex" style="background:#DDF8EA;color:#0b7a47;">↑</span>Next steps</h3>
+      <ul class="bullets">
+        <li>Plug into real Startup ASEAN programme, event and startup data.</li>
+        <li>A Cradle reviewer queue for low-confidence or high-value proofs.</li>
+        <li>Corporate-side quests, so partners post the pilots they want.</li>
+        <li>Quests and follow-ups in the founder's own language.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 16 CLOSE -->
+<section class="slide" data-label="End" aria-label="Closing">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;">
+    <div class="brand" style="font-size:34px;">Nexus <b>Net</b></div>
+    <h2 class="title xl" style="max-width:980px;">Every quest is a <span class="grad-text">measurable outcome</span></h2>
+    <p class="lead" style="max-width:720px;">Verified companies. Personalised cross-border quests. Proof-checked outcomes. A live funnel for Cradle. Built with Gemma 4.</p>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span data-flag="MY" data-h="22"></span><span data-flag="SG" data-h="22"></span><span data-flag="ID" data-h="22"></span><span data-flag="VN" data-h="22"></span><span data-flag="TH" data-h="22"></span><span data-flag="PH" data-h="22"></span>
+    </div>
+    <div class="chips"><span class="chip-lg">nexus-net-ebon.vercel.app</span><span class="chip-lg">github.com/ar-Raqmi/nexus-net</span><span class="chip-lg">MIT licence</span></div>
+    <div class="kicker">Thank you · Hacktoberfest Hack Day KL 2026</div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<nav class="bar" aria-label="Slide navigation">
+  <div class="brand">Nexus <b>Net</b></div>
+  <button class="nav-btn prev" id="prev" type="button" aria-label="Previous slide">← Previous</button>
+  <div class="track-wrap"><div class="track-line"><div class="track-fill" id="fill"></div></div><div class="nodes" id="nodes"></div></div>
+  <span class="counter" id="counter">1 / 16</span>
+  <button class="nav-btn next" id="next" type="button" aria-label="Next slide">Next →</button>
+</nav>
+
+<script>
+(function () {
+  // ---- flags (simplified SVGs, 3:2) ----
+  function flagSVG(c, h) {
+    var w = Math.round(h * 1.5);
+    var body = {
+      MY: '<rect width="30" height="20" fill="#fff"/>' + [0,2,4,6,8,10,12].map(function (i) { return '<rect y="' + (i * 20 / 14 * 1) + '" width="30" height="' + (20 / 14) + '" fill="#CC0001"/>'; }).join('') +
+          '<rect width="15" height="11.43" fill="#010066"/><circle cx="6" cy="5.7" r="3.4" fill="#FC0"/><circle cx="7.1" cy="5.7" r="2.8" fill="#010066"/><polygon points="11,3.3 11.6,5 13.3,5 11.9,6 12.4,7.7 11,6.7 9.6,7.7 10.1,6 8.7,5 10.4,5" fill="#FC0"/>',
+      SG: '<rect width="30" height="10" fill="#EF3340"/><rect y="10" width="30" height="10" fill="#fff"/><circle cx="6.5" cy="5" r="3.3" fill="#fff"/><circle cx="7.7" cy="5" r="3.1" fill="#EF3340"/>' +
+          '<g fill="#fff"><circle cx="10.6" cy="3" r=".7"/><circle cx="12.4" cy="4.2" r=".7"/><circle cx="11.8" cy="6.3" r=".7"/><circle cx="9.5" cy="6.3" r=".7"/><circle cx="8.9" cy="4.2" r=".7"/></g>',
+      ID: '<rect width="30" height="10" fill="#CE1126"/><rect y="10" width="30" height="10" fill="#fff"/>',
+      VN: '<rect width="30" height="20" fill="#DA251D"/><polygon points="15,4 16.2,8.3 20.7,8.3 17.1,10.9 18.4,15.2 15,12.6 11.6,15.2 12.9,10.9 9.3,8.3 13.8,8.3" fill="#FF0"/>',
+      TH: '<rect width="30" height="20" fill="#A51931"/><rect y="3.33" width="30" height="13.33" fill="#F4F5F8"/><rect y="6.67" width="30" height="6.67" fill="#2D2A4A"/>',
+      PH: '<rect width="30" height="10" fill="#0038A8"/><rect y="10" width="30" height="10" fill="#CE1126"/><polygon points="0,0 17.3,10 0,20" fill="#fff"/><circle cx="5.5" cy="10" r="2.2" fill="#FCD116"/>' +
+          '<g fill="#FCD116"><circle cx="2" cy="3" r=".8"/><circle cx="2" cy="17" r=".8"/><circle cx="14" cy="10" r=".8"/></g>'
+    }[c] || '<rect width="30" height="20" fill="#ccc"/>';
+    var names = { MY: 'Malaysia', SG: 'Singapore', ID: 'Indonesia', VN: 'Vietnam', TH: 'Thailand', PH: 'Philippines' };
+    return '<svg class="flag" width="' + w + '" height="' + h + '" viewBox="0 0 30 20" role="img" aria-label="' + (names[c] || c) + ' flag">' + body + '</svg>';
+  }
+  document.querySelectorAll('[data-flag]').forEach(function (el) {
+    el.outerHTML = flagSVG(el.getAttribute('data-flag'), parseInt(el.getAttribute('data-h') || '14', 10));
+  });
+
+  // ---- deck ----
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var stage = document.getElementById('stage');
+  var viewport = document.getElementById('viewport');
+  var nodes = document.getElementById('nodes');
+  var counter = document.getElementById('counter');
+  var fill = document.getElementById('fill');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var idx = 0;
+
+  slides.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'node';
+    b.setAttribute('aria-label', 'Go to slide ' + (i + 1) + ': ' + (s.getAttribute('aria-label') || ''));
+    b.title = s.getAttribute('aria-label') || '';
+    b.innerHTML = '<span class="hex">' + (i + 1) + '</span>';
+    b.addEventListener('click', function () { go(i); });
+    nodes.appendChild(b);
+  });
+
+  function fit() {
+    var w = viewport.clientWidth, h = viewport.clientHeight;
+    var s = Math.min((w - 16) / 1280, (h - 16) / 720);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + Math.max(s, 0.1) + ')';
+  }
+
+  function go(i, fromHash) {
+    idx = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === idx); });
+    Array.prototype.forEach.call(nodes.children, function (n, k) {
+      n.classList.toggle('current', k === idx);
+      n.classList.toggle('done', k < idx);
+      if (k === idx) n.setAttribute('aria-current', 'step'); else n.removeAttribute('aria-current');
+    });
+    counter.textContent = (idx + 1) + ' / ' + slides.length;
+    fill.style.width = (slides.length > 1 ? (idx / (slides.length - 1)) * 100 : 100) + '%';
+    prev.disabled = idx === 0;
+    next.disabled = idx === slides.length - 1;
+    if (!fromHash) {
+      try { history.replaceState(null, '', '#slide-' + (idx + 1)); } catch (e) {}
+    }
+  }
+
+  function fromHash() {
+    var m = /^#slide-(\d+)$/.exec(location.hash || '');
+    go(m ? parseInt(m[1], 10) - 1 : 0, true);
+  }
+
+  prev.addEventListener('click', function () { go(idx - 1); });
+  next.addEventListener('click', function () { go(idx + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(idx - 1); }
+    else if (e.key === 'Home') { go(0); }
+    else if (e.key === 'End') { go(slides.length - 1); }
+  });
+  window.addEventListener('hashchange', fromHash);
+  window.addEventListener('resize', fit);
+  fit();
+  fromHash();
+})();
+</script>
+</body>
+</html>
