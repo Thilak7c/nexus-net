@@ -6,7 +6,7 @@
 
 Startups earn XP by turning connections into real outcomes. Gemma 4 generates their quests and verifies their proof, and Cradle sees the conversion funnel live.
 
-[**Live demo →**](https://nexus-net-iota.vercel.app/)
+[**Live demo →**](https://nexus-net-iota.vercel.app/) &nbsp;·&nbsp; [**Pitch deck →**](https://nexus-pitch-ruddy.vercel.app)
 
 ![Next.js](https://img.shields.io/badge/Next.js-App_Router-000000?logo=nextdotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -47,6 +47,8 @@ Startups earn XP by turning connections into real outcomes. Gemma 4 generates th
 > *"How can Startup ASEAN successfully convert ecosystem connections into measurable outcomes, including investments, commercial partnerships, market expansion, and cross-border POCs?"*
 
 Nexus Net turns that question into a game. Every connection becomes a quest, every quest needs proof, and every verified proof moves the startup, and the whole ecosystem, further up the funnel.
+
+📽️ See the [**pitch deck**](https://nexus-pitch-ruddy.vercel.app) we presented at the hackathon. Its source is [`pitch-deck.html`](pitch-deck.html).
 
 ---
 
